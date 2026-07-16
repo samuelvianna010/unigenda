@@ -10,7 +10,8 @@ data class Subject(
 	val id: Long = 0,
 	val name: String,
 	val professor: String,
-	val colorInt: Int
+	val colorInt: Int,
+	val totalWeight: Double = 10.0
 ) {
 	val color: SubjectColor
 		get() = SubjectColor.fromColorValue(
@@ -22,5 +23,6 @@ val DummySubject = Subject(
 	0L,
 	"Dummy Subject Name",
 	"Dummy Professor Name",
-	SubjectColor.PURPLE.color.value.toInt()
+	SubjectColor.PURPLE.color.value.toInt(),
+	totalWeight = 10.0
 )

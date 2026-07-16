@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
@@ -48,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -105,6 +107,11 @@ fun EditOrDeleteSubjectScreen(
 			subject.professor
 		)
 	}
+	var totalWeightStr by remember {
+		mutableStateOf<String>(
+			subject.totalWeight.toString()
+		)
+	}
 	var selectedColor by remember {
 		mutableStateOf(
 			subject.color
@@ -131,6 +138,11 @@ fun EditOrDeleteSubjectScreen(
 			null
 		)
 	}
+	var totalWeightError by remember {
+		mutableStateOf<String?>(
+			null
+		)
+	}
 
 	var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -140,6 +152,7 @@ fun EditOrDeleteSubjectScreen(
 		// Reseta erros anteriores
 		subjectNameError = null
 		professorNameError = null
+		totalWeightError = null
 		var hasError = false
 		// Validação do Nome
 		if (subjectName.isBlank()) {
@@ -155,6 +168,11 @@ fun EditOrDeleteSubjectScreen(
 			hasError = true
 		}
 
+		val totalWeight = totalWeightStr.toDoubleOrNull()
+		if (totalWeight == null || totalWeight <= 0) {
+			totalWeightError = "Peso total deve ser um número maior que 0"
+			hasError = true
+		}
 
 		if (!hasError) {
 			println("Salvando disciplina")
@@ -163,7 +181,8 @@ fun EditOrDeleteSubjectScreen(
 					subject.id,
 					subjectName,
 					professorName,
-					selectedColor.color.toArgb()
+					selectedColor.color.toArgb(),
+					totalWeight ?: 10.0
 				)
 			)
 			onBack()
@@ -282,6 +301,36 @@ fun EditOrDeleteSubjectScreen(
 					},
 					modifier = Modifier.fillMaxWidth(),
 					singleLine = true,
+					colors = OutlinedTextFieldDefaults.colors(
+						focusedBorderColor = subjectColorScheme.primary,
+						focusedLabelColor = subjectColorScheme.primary,
+						unfocusedBorderColor = subjectColorScheme.secondary,
+						unfocusedLabelColor = subjectColorScheme.secondary,
+						focusedTextColor = subjectColorScheme.onSurface,
+						unfocusedTextColor = subjectColorScheme.onSurface,
+						cursorColor = subjectColorScheme.onSurface,
+						focusedPlaceholderColor = subjectColorScheme.onSurface,
+						unfocusedPlaceholderColor = subjectColorScheme.onSurface
+					)
+				)
+				OutlinedTextField(
+					value = totalWeightStr,
+					onValueChange = {
+						totalWeightStr = it
+					},
+					label = { Text("Peso Total da Matéria") },
+					placeholder = { Text("Ex: 10.0") },
+					isError = totalWeightError != null,
+					supportingText = {
+						if (totalWeightError != null) {
+							Text(
+								totalWeightError!!
+							)
+						}
+					},
+					modifier = Modifier.fillMaxWidth(),
+					singleLine = true,
+					keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
 					colors = OutlinedTextFieldDefaults.colors(
 						focusedBorderColor = subjectColorScheme.primary,
 						focusedLabelColor = subjectColorScheme.primary,

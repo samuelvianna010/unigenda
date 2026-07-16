@@ -51,7 +51,8 @@ class AssessmentsViewModel @Inject constructor(
         subjectId: Long,
         date: Long,
         type: AssessmentType,
-        weight: Double,
+        weightPercentage: Double,
+        maxScore: Double,
         score: Double? = null
     ) {
         viewModelScope.launch {
@@ -62,7 +63,8 @@ class AssessmentsViewModel @Inject constructor(
                     date = date,
                     type = type,
                     urgencyLevel = type.defaultUrgency,
-                    weight = weight,
+                    weightPercentage = weightPercentage,
+                    maxScore = maxScore,
                     score = score
                 )
                 assessmentDao.insertAssessment(newAssessment)

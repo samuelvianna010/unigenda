@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [Subject::class, Assessment::class],
-    version = 5, // Increment version for weight and score attributes
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

@@ -118,19 +118,19 @@ fun AssessmentDetailsContent(
 	if (showScoreDialog) {
 		AlertDialog(
 			onDismissRequest = { showScoreDialog = false },
-			title = { Text("Lançar Nota") },
+			title = { Text("Lançar Pontuação") },
 			text = {
 				Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-					Text("Qual foi sua nota em ${assessment.name}?")
+					Text("Qual foi sua pontuação em ${assessment.name}?")
 					Text(
-						"Valor total: ${assessment.weight.formatCompact()}",
+						"Peso na matéria: ${assessment.weightPercentage.formatCompact()}",
 						fontWeight = FontWeight.Bold,
 						fontSize = 3.em
 					)
 					OutlinedTextField(
 						value = scoreInput,
 						onValueChange = { scoreInput = it },
-						label = { Text("Nota") },
+						label = { Text("Pontuação Obtida") },
 						keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
 						modifier = Modifier.fillMaxWidth(),
 						colors = OutlinedTextFieldDefaults.colors(
@@ -271,8 +271,8 @@ fun AssessmentDetailsContent(
 								contentAlignment = Alignment.Center,
 								modifier = Modifier.fillMaxWidth()
 							) {
-								val progressValue = remember(assessment.weight) {
-									(assessment.weight / 10f).toFloat()
+								val progressValue = remember(assessment.weightPercentage) {
+									(assessment.weightPercentage / 100.0).toFloat()
 								}
 
 								CircularProgressIndicator(
@@ -284,7 +284,7 @@ fun AssessmentDetailsContent(
 								)
 								
 								Text(
-									text = "${assessment.weight * 10}%",
+									text = "${assessment.weightPercentage.formatCompact()}%",
 									style = MaterialTheme.typography.headlineSmall,
 									fontWeight = FontWeight.Bold,
 									textAlign = TextAlign.Center
@@ -306,7 +306,7 @@ fun AssessmentDetailsContent(
 						verticalArrangement = Arrangement.spacedBy(10.dp)
 					) {
 						Text(
-							"Nota Obtida",
+							"Pontuação Obtida",
 							fontWeight = FontWeight.Bold,
 							fontSize = 4.5.em
 						)
@@ -316,11 +316,11 @@ fun AssessmentDetailsContent(
 						) {
 							val progressValue = remember(
 								assessment.score,
-								assessment.weight
+								assessment.maxScore
 							) {
-								if (assessment.weight > 0) {
+								if (assessment.maxScore > 0) {
 									((assessment.score
-										?: 0.0) / assessment.weight).coerceIn(
+										?: 0.0) / assessment.maxScore).coerceIn(
 										0.0,
 										1.0
 									).toFloat()
@@ -339,14 +339,14 @@ fun AssessmentDetailsContent(
 								verticalArrangement = Arrangement.Center
 							) {
 								Text(
-									text = "${assessment.score.formatCompact()}/${assessment.weight.formatCompact()}",
+									text = "${assessment.score.formatCompact()}/${assessment.maxScore.formatCompact()}",
 									style = MaterialTheme.typography.headlineSmall,
 									fontWeight = FontWeight.Bold,
 									textAlign = TextAlign.Center
 								)
-								if (assessment.score != null && assessment.weight > 0) {
+								if (assessment.score != null && assessment.maxScore > 0) {
 									val percentage =
-										(assessment.score / assessment.weight * 100).toInt()
+										(assessment.score / assessment.maxScore * 100).toInt()
 									Text(
 										text = "($percentage%)",
 										style = MaterialTheme.typography.bodyMedium,
@@ -370,7 +370,7 @@ fun AssessmentDetailsContent(
 							contentColor = subjectColorScheme.onSurface
 						)
 					) {
-						Text(if (assessment.score == null) "Inserir Nota" else "Editar Nota")
+						Text(if (assessment.score == null) "Inserir Pontuação" else "Editar Pontuação")
 					}
 
 					Button(

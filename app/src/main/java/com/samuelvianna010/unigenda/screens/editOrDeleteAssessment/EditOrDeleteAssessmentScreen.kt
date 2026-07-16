@@ -104,7 +104,8 @@ fun EditOrDeleteAssessmentScreen(
     }
     var selectedType by remember { mutableStateOf(assessment.type) }
     var selectedDate by remember { mutableStateOf(assessment.date) }
-    var weightStr by remember { mutableStateOf(assessment.weight.toString()) }
+    var weightPercentageStr by remember { mutableStateOf(assessment.weightPercentage.toString()) }
+    var maxScoreStr by remember { mutableStateOf(assessment.maxScore.toString()) }
     var scoreStr by remember { mutableStateOf(assessment.score?.toString() ?: "") }
 
     androidx.compose.runtime.LaunchedEffect(subjects, assessment.subjectId) {
@@ -122,7 +123,9 @@ fun EditOrDeleteAssessmentScreen(
     }
 
     var nameError by remember { mutableStateOf<String?>(null) }
-    var weightError by remember { mutableStateOf<String?>(null) }
+    var weightPercentageError by remember { mutableStateOf<String?>(null) }
+    var maxScoreError by remember { mutableStateOf<String?>(null) }
+    var scoreError by remember { mutableStateOf<String?>(null) }
 
     SetStatusBarColor(subjectColorScheme.primary)
 
@@ -163,7 +166,9 @@ fun EditOrDeleteAssessmentScreen(
 
     fun onSaveClick() {
         nameError = null
-        weightError = null
+        weightPercentageError = null
+        maxScoreError = null
+        scoreError = null
         var hasError = false
         
         if (name.isBlank()) {
@@ -171,24 +176,36 @@ fun EditOrDeleteAssessmentScreen(
             hasError = true
         }
 
-        val weight = weightStr.toDoubleOrNull() ?: -1.0
-        if (weight < 0.0 || weight > 10.0) {
-            weightError = "O valor deve ser entre 0 e 10"
+        val weightPercentage = weightPercentageStr.toDoubleOrNull() ?: -1.0
+        if (weightPercentage < 0.0 || weightPercentage > 100.0) {
+            weightPercentageError = "O peso deve estar entre 0 e 100%"
+            hasError = true
+        }
+
+        val maxScore = maxScoreStr.toDoubleOrNull() ?: -1.0
+        if (maxScore <= 0.0) {
+            maxScoreError = "A pontuação máxima deve ser maior que 0"
+            hasError = true
+        }
+
+        val score = scoreStr.toDoubleOrNull()
+        if (scoreStr.isNotBlank() && (score == null || score < 0.0 || score > maxScore)) {
+            scoreError = "A pontuação deve estar entre 0 e $maxScore"
             hasError = true
         }
 
         if (!hasError) {
-            viewModel?.updateAssessment(
-                assessment.copy(
-                    name = name,
-                    subjectId = selectedSubject.id,
-                    type = selectedType,
-                    urgencyLevel = selectedType.defaultUrgency,
-                    date = selectedDate,
-                    weight = weight,
-                    score = scoreStr.toDoubleOrNull()
-                )
+            val finalAssessment = assessment.copy(
+                name = name,
+                subjectId = selectedSubject.id,
+                date = selectedDate,
+                type = selectedType,
+                weightPercentage = weightPercentage,
+                maxScore = maxScore,
+                score = score,
+                urgencyLevel = selectedType.defaultUrgency
             )
+            viewModel?.updateAssessment(finalAssessment)
             onBack()
         }
     }
@@ -320,36 +337,63 @@ fun EditOrDeleteAssessmentScreen(
                         }
                     }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        OutlinedTextField(
-                            value = weightStr,
-                            onValueChange = { weightStr = it },
-                            label = { Text("Valor (0-10)") },
-                            modifier = Modifier.weight(1f),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            isError = weightError != null,
-                            supportingText = { if (weightError != null) Text(weightError!!) },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = subjectColorScheme.primary,
-                                focusedLabelColor = subjectColorScheme.primary,
-                                cursorColor = subjectColorScheme.primary
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = weightPercentageStr,
+                                onValueChange = { weightPercentageStr = it },
+                                label = { Text("Peso na Matéria (%)") },
+                                modifier = Modifier.weight(1f),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                isError = weightPercentageError != null,
+                                supportingText = { if (weightPercentageError != null) Text(weightPercentageError!!) },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = subjectColorScheme.primary,
+                                    focusedLabelColor = subjectColorScheme.primary,
+                                    cursorColor = subjectColorScheme.primary
+                                )
                             )
-                        )
-                        OutlinedTextField(
-                            value = scoreStr,
-                            onValueChange = { scoreStr = it },
-                            label = { Text("Nota Obtida") },
-                            modifier = Modifier.weight(1f),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = subjectColorScheme.primary,
-                                focusedLabelColor = subjectColorScheme.primary,
-                                cursorColor = subjectColorScheme.primary
+                        }
+                        
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = maxScoreStr,
+                                onValueChange = { maxScoreStr = it },
+                                label = { Text("Pontuação Máxima") },
+                                modifier = Modifier.weight(1f),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                isError = maxScoreError != null,
+                                supportingText = { if (maxScoreError != null) Text(maxScoreError!!) },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = subjectColorScheme.primary,
+                                    focusedLabelColor = subjectColorScheme.primary,
+                                    cursorColor = subjectColorScheme.primary
+                                )
                             )
-                        )
+                            
+                            OutlinedTextField(
+                                value = scoreStr,
+                                onValueChange = { scoreStr = it },
+                                label = { Text("Pontuação Obtida") },
+                                modifier = Modifier.weight(1f),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                isError = scoreError != null,
+                                supportingText = { if (scoreError != null) Text(scoreError!!) },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = subjectColorScheme.primary,
+                                    focusedLabelColor = subjectColorScheme.primary,
+                                    cursorColor = subjectColorScheme.primary
+                                )
+                            )
+                        }
                     }
 
                     Column {

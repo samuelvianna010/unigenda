@@ -2,6 +2,7 @@ package com.samuelvianna010.unigenda.screens.subjectDetails
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,8 @@ import com.samuelvianna010.unigenda.database.Subject
 import com.samuelvianna010.unigenda.database.SubjectViewModel
 import com.samuelvianna010.unigenda.database.TemplateSubject
 import com.samuelvianna010.unigenda.ui.utils.formatCompact
+import com.samuelvianna010.unigenda.ui.utils.calculateTotalNormalizedScore
+import com.samuelvianna010.unigenda.ui.utils.calculatePercentage
 
 //region Screen Logic
 @Composable
@@ -95,9 +98,9 @@ fun SubjectDetailsContent(
 	val subjectColorScheme = MaterialTheme.colorScheme
 	SetStatusBarColor(subjectColorScheme.primary)
 
-	val totalWeight = assessments.sumOf { it.weight }
-	val currentScore = assessments.sumOf { it.score ?: 0.0 }
-	val totalGradedWeight = assessments.filter { it.score != null }.sumOf { it.weight }
+	val normalizedScore = calculateTotalNormalizedScore(assessments)
+	val percentage = calculatePercentage(assessments)
+	val totalPercentage = assessments.sumOf { it.weightPercentage }
 
 	Scaffold(
 		containerColor = subjectColorScheme.background,
@@ -174,7 +177,7 @@ fun SubjectDetailsContent(
 							contentAlignment = Alignment.Center,
 							modifier = Modifier.fillMaxWidth()
 						) {
-							val progressValue = (totalWeight / 10f).coerceIn(0.0, 1.0).toFloat()
+							val progressValue = (totalPercentage / 100f).coerceIn(0.0, 1.0).toFloat()
 							
 							CircularProgressIndicator(
 								progress = { progressValue },
@@ -195,7 +198,7 @@ fun SubjectDetailsContent(
 									textAlign = TextAlign.Center
 								)
 								Text(
-									text = "Total: ${totalWeight.formatCompact()}",
+									text = "Total: ${totalPercentage.formatCompact()}%",
 									style = MaterialTheme.typography.bodySmall,
 									textAlign = TextAlign.Center
 								)
@@ -224,7 +227,7 @@ fun SubjectDetailsContent(
 							contentAlignment = Alignment.Center,
 							modifier = Modifier.fillMaxWidth()
 						) {
-							val progressValue = if (totalWeight > 0) (currentScore / 10f).coerceIn(0.0, 1.0).toFloat() else 0f
+							val progressValue = (normalizedScore / 10f).coerceIn(0.0, 1.0).toFloat()
 
 							CircularProgressIndicator(
 								progress = { progressValue },
@@ -238,19 +241,17 @@ fun SubjectDetailsContent(
 								verticalArrangement = Arrangement.Center
 							) {
 								Text(
-									text = currentScore.formatCompact(),
+									text = String.format("%.1f",
+														 (normalizedScore * 10).toInt() / 10.0),
 									style = MaterialTheme.typography.headlineSmall,
 									fontWeight = FontWeight.Bold,
 									textAlign = TextAlign.Center
 								)
-								if (totalGradedWeight > 0) {
-									val percentage = (currentScore / totalGradedWeight * 100).toInt()
-									Text(
-										text = "($percentage%)",
-										style = MaterialTheme.typography.bodyMedium,
-										textAlign = TextAlign.Center
-									)
-								}
+								Text(
+									text = "($percentage%)",
+									style = MaterialTheme.typography.bodyMedium,
+									textAlign = TextAlign.Center
+								)
 							}
 						}
 					}

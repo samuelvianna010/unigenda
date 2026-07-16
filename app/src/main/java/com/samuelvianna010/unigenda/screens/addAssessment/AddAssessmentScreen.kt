@@ -73,7 +73,8 @@ fun AddAssessmentScreen(
     var selectedSubject by remember { mutableStateOf<Subject?>(null) }
     var selectedType by remember { mutableStateOf(AssessmentType.TEST) }
     var selectedDate by remember { mutableStateOf(System.currentTimeMillis()) }
-    var weightStr by remember { mutableStateOf("0.0") }
+    var weightPercentageStr by remember { mutableStateOf("") }
+    var maxScoreStr by remember { mutableStateOf("") }
     var scoreStr by remember { mutableStateOf("") }
     
     var isSubjectDropdownExpanded by remember { mutableStateOf(false) }
@@ -88,7 +89,9 @@ fun AddAssessmentScreen(
 
     var nameError by remember { mutableStateOf<String?>(null) }
     var subjectError by remember { mutableStateOf<String?>(null) }
-    var weightError by remember { mutableStateOf<String?>(null) }
+    var weightPercentageError by remember { mutableStateOf<String?>(null) }
+    var maxScoreError by remember { mutableStateOf<String?>(null) }
+    var scoreError by remember { mutableStateOf<String?>(null) }
 
     SetStatusBarColor(subjectColorScheme.primary)
 
@@ -130,7 +133,9 @@ fun AddAssessmentScreen(
     fun onSaveClick() {
         nameError = null
         subjectError = null
-        weightError = null
+        weightPercentageError = null
+        maxScoreError = null
+        scoreError = null
         var hasError = false
         
         if (assessmentName.isBlank()) {
@@ -142,9 +147,21 @@ fun AddAssessmentScreen(
             hasError = true
         }
         
-        val weight = weightStr.toDoubleOrNull() ?: -1.0
-        if (weight < 0.0 || weight > 10.0) {
-            weightError = "O valor deve ser entre 0 e 10"
+        val weightPercentage = weightPercentageStr.toDoubleOrNull() ?: -1.0
+        if (weightPercentage < 0.0 || weightPercentage > 100.0) {
+            weightPercentageError = "O peso deve estar entre 0 e 100%"
+            hasError = true
+        }
+
+        val maxScore = maxScoreStr.toDoubleOrNull() ?: -1.0
+        if (maxScore <= 0.0) {
+            maxScoreError = "A pontuação máxima deve ser maior que 0"
+            hasError = true
+        }
+
+        val score = scoreStr.toDoubleOrNull()
+        if (scoreStr.isNotBlank() && (score == null || score < 0.0 || score > maxScore)) {
+            scoreError = "A pontuação deve estar entre 0 e $maxScore"
             hasError = true
         }
 
@@ -154,8 +171,9 @@ fun AddAssessmentScreen(
                 subjectId = selectedSubject!!.id,
                 date = selectedDate,
                 type = selectedType,
-                weight = weight,
-                score = scoreStr.toDoubleOrNull()
+                weightPercentage = weightPercentage,
+                maxScore = maxScore,
+                score = score
             )
             onBack()
         }
@@ -279,36 +297,59 @@ fun AddAssessmentScreen(
                         }
                     }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         OutlinedTextField(
-                            value = weightStr,
-                            onValueChange = { weightStr = it },
-                            label = { Text("Valor (0-10)") },
-                            modifier = Modifier.weight(1f),
+                            value = weightPercentageStr,
+                            onValueChange = { weightPercentageStr = it },
+                            label = { Text("Peso na Matéria") },
+                            modifier = Modifier.fillMaxWidth(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            isError = weightError != null,
-                            supportingText = { if (weightError != null) Text(weightError!!) },
+                            isError = weightPercentageError != null,
+                            supportingText = { if (weightPercentageError != null) Text(weightPercentageError!!) },
+                            suffix = { Text("%") },
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = subjectColorScheme.primary,
                                 focusedLabelColor = subjectColorScheme.primary,
                                 cursorColor = subjectColorScheme.primary
                             )
                         )
-                        OutlinedTextField(
-                            value = scoreStr,
-                            onValueChange = { scoreStr = it },
-                            label = { Text("Nota Obtida") },
-                            modifier = Modifier.weight(1f),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = subjectColorScheme.primary,
-                                focusedLabelColor = subjectColorScheme.primary,
-                                cursorColor = subjectColorScheme.primary
+                        
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = maxScoreStr,
+                                onValueChange = { maxScoreStr = it },
+                                label = { Text("Pontuação Máxima") },
+                                modifier = Modifier.weight(1f),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                isError = maxScoreError != null,
+                                supportingText = { if (maxScoreError != null) Text(maxScoreError!!) },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = subjectColorScheme.primary,
+                                    focusedLabelColor = subjectColorScheme.primary,
+                                    cursorColor = subjectColorScheme.primary
+                                )
                             )
-                        )
+                            
+                            OutlinedTextField(
+                                value = scoreStr,
+                                onValueChange = { scoreStr = it },
+                                label = { Text("Pontuação Obtida") },
+                                modifier = Modifier.weight(1f),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                isError = scoreError != null,
+                                supportingText = { if (scoreError != null) Text(scoreError!!) },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = subjectColorScheme.primary,
+                                    focusedLabelColor = subjectColorScheme.primary,
+                                    cursorColor = subjectColorScheme.primary
+                                )
+                            )
+                        }
                     }
 
                     Column {

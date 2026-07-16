@@ -45,8 +45,9 @@ data class Assessment(
     val date: Long,
     val type: AssessmentType,
     val urgencyLevel: UrgencyLevel,
-    val weight: Double = 0.0, // Worth (0.0 to 10.0)
-    val score: Double? = null // Actual score attained (0.0 to weight)
+    val weightPercentage: Double, // Weight in subject (0.0 to 100.0)
+    val maxScore: Double, // Maximum possible score
+    val score: Double? = null // Actual score attained (0.0 to maxScore)
 )
 
 data class AssessmentWithSubject(
@@ -62,7 +63,8 @@ val TemplateSubject = Subject(
     id = 0L,
     name = "Introdução ao Pensamento Dedutivo",
     professor = "Severino Collier",
-    colorInt = SubjectColor.BLUE.color.toArgb()
+    colorInt = SubjectColor.BLUE.color.toArgb(),
+    totalWeight = 10.0
 )
 
 val TemplateAssessment = Assessment(
@@ -72,8 +74,9 @@ val TemplateAssessment = Assessment(
     date = System.currentTimeMillis(),
     type = AssessmentType.TEST,
     urgencyLevel = UrgencyLevel.MEDIUM,
-    weight = 2.0,
-    score = 1.9
+    weightPercentage = 20.0,
+    maxScore = 10.0,
+    score = 9.0
 )
 
 val TemplateAssessmentWithSubject = AssessmentWithSubject(
