@@ -31,6 +31,7 @@ import com.samuelvianna010.unigenda.database.Subject
 import com.samuelvianna010.unigenda.database.TemplateSubject
 import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 
+//region Component UI
 @Composable
 fun SubjectCard(
 	subject: Subject,
@@ -59,6 +60,7 @@ fun SubjectCard(
 				.fillMaxSize()
 				.padding(16.dp)
 		) {
+			//region Subject Info
 			Column(
 				verticalArrangement = Arrangement.Center,
 				modifier = Modifier.fillMaxWidth(0.8f) // Deixa espaço para a seta
@@ -77,6 +79,9 @@ fun SubjectCard(
 					fontWeight = FontWeight.SemiBold
 				)
 			}
+			//endregion
+
+			//region Navigation Icon
 			// Ícone de "Ir para" no canto direito
 			Icon(
 				imageVector = Icons.Default.ArrowForward,
@@ -86,10 +91,13 @@ fun SubjectCard(
 					.align(Alignment.CenterEnd)
 					.size(32.dp)
 			)
+			//endregion
 		}
 	}
 }
+//endregion
 
+//region Preview
 @Preview(
 	device = "spec:width=411dp,height=891dp",
 	showBackground = true,
@@ -104,3 +112,4 @@ fun Preview() {
 		)
 	}
 }
+//endregion

@@ -42,6 +42,7 @@ import com.samuelvianna010.unigenda.database.TemplateAssessment
 import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 import com.samuelvianna010.unigenda.ui.utils.formatDate
 
+//region Component Logic
 @Composable
 fun AssessmentCard(
     assessmentId: Long,
@@ -61,7 +62,9 @@ fun AssessmentCard(
         onClick = onClick
     )
 }
+//endregion
 
+//region Component UI
 @Composable
 fun AssessmentCardContent(
     assessment: Assessment,
@@ -92,9 +95,11 @@ fun AssessmentCardContent(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
+                //region Info Chips
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    //region Subject Chip
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -113,6 +118,9 @@ fun AssessmentCardContent(
                             fontSize = 3.em
                         )
                     }
+                    //endregion
+
+                    //region Type And Date Chip
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -135,7 +143,11 @@ fun AssessmentCardContent(
                             fontSize = 2.8.em
                         )
                     }
+                    //endregion
                 }
+                //endregion
+
+                //region Assessment Title
                 Text(
                     text = assessment.name,
                     color = subjectColorScheme.onSurface,
@@ -144,11 +156,14 @@ fun AssessmentCardContent(
                     fontWeight = FontWeight.ExtraBold,
                     maxLines = 2
                 )
+                //endregion
             }
         }
     }
 }
+//endregion
 
+//region Preview
 @Preview(
     device = "spec:width=411dp,height=891dp",
     showBackground = true,
@@ -164,3 +179,4 @@ fun AssessmentCardPreview() {
         )
     }
 }
+//endregion

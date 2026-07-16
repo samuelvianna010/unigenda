@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+//region Component UI
 @Composable
 fun ExpandableFAB(
     isExpanded: Boolean,
@@ -33,6 +34,7 @@ fun ExpandableFAB(
     onAddSubject: () -> Unit,
     onAddAssessment: () -> Unit
 ) {
+    //region Scrim Overlay
     if (isExpanded) {
         Box(
             modifier = Modifier
@@ -40,6 +42,7 @@ fun ExpandableFAB(
                 .clickable(onClick = onToggle)
         )
     }
+    //endregion
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,6 +53,7 @@ fun ExpandableFAB(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            //region Add Assessment Action
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
@@ -71,6 +75,9 @@ fun ExpandableFAB(
                     text = { Text("Adicionar Avaliação") }
                 )
             }
+            //endregion
+
+            //region Add Subject Action
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
@@ -92,6 +99,9 @@ fun ExpandableFAB(
                     text = { Text("Adicionar Matéria") }
                 )
             }
+            //endregion
+
+            //region Main FAB
             ExtendedFloatingActionButton(
                 onClick = onToggle,
                 icon = {
@@ -107,6 +117,8 @@ fun ExpandableFAB(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
+            //endregion
         }
     }
 }
+//endregion

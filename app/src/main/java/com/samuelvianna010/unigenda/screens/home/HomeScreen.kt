@@ -37,6 +37,7 @@ import com.samuelvianna010.unigenda.database.Assessment
 import com.samuelvianna010.unigenda.database.AssessmentsViewModel
 import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 
+//region Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -81,6 +82,7 @@ fun HomeScreen(
                 .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            //region Upcoming Assessments Section
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
                     "Próximas Avaliações",
@@ -114,7 +116,9 @@ fun HomeScreen(
                     }
                 }
             }
+            //endregion
 
+            //region Subjects Section
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
                     "Disciplinas",
@@ -146,10 +150,13 @@ fun HomeScreen(
                     }
                 }
             }
+            //endregion
         }
     }
 }
+//endregion
 
+//region Preview
 @Preview(device = "spec:width=411dp,height=891dp", showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
@@ -157,3 +164,4 @@ private fun HomeScreenPreview() {
         HomeScreen()
     }
 }
+//endregion
