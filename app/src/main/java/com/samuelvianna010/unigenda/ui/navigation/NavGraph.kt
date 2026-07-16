@@ -92,7 +92,7 @@ fun NavGraph(navController: NavHostController) {
                 },
                 onBack = { navController.popBackStack()
 
-					}
+				}
             )
         }
         //endregion
