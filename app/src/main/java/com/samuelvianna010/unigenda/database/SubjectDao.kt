@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
+//region Subject DAO
 @Dao
 interface SubjectDao {
 	@Query("SELECT * FROM subjects ORDER BY name ASC")
@@ -23,3 +24,4 @@ interface SubjectDao {
 	@Query("SELECT * FROM subjects WHERE id = :id")
 	fun getSubjectById(id: Long): Flow<Subject?>
 }
+//endregion

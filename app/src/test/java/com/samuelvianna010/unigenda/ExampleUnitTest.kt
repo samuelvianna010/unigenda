@@ -3,6 +3,7 @@ package com.samuelvianna010.unigenda
 import org.junit.Test
 import org.junit.Assert.*
 
+//region Example Unit Test
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -17,3 +18,4 @@ class ExampleUnitTest {
 		)
 	}
 }
+//endregion

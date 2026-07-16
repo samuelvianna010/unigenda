@@ -3,6 +3,7 @@ package com.samuelvianna010.unigenda.database
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
+//region Assessment DAO
 @Dao
 interface AssessmentDao {
     @Query("SELECT * FROM assessments ORDER BY date ASC")
@@ -27,3 +28,4 @@ interface AssessmentDao {
     @Query("SELECT * FROM assessments WHERE id = :id")
     fun getAssessmentById(id: Long): Flow<Assessment?>
 }
+//endregion

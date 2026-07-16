@@ -12,6 +12,7 @@ import com.samuelvianna010.unigenda.ui.navigation.NavGraph
 import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+//region Main Activity
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +27,9 @@ class MainActivity : ComponentActivity() {
 		}
 	}
 }
+//endregion
 
+//region Preview
 @Preview(
 	device = Devices.PHONE,
 	showBackground = true
@@ -39,3 +42,4 @@ fun simplePreview() {
 		NavGraph(navController = navController)
 	}
 }
+//endregion

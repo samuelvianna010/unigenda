@@ -10,6 +10,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+//region Color Schemes
 private val DarkColorScheme =
 	darkColorScheme(
 		primary = Purple80,
@@ -31,7 +32,9 @@ private val LightColorScheme =
     onSurface = Color(0xFF1C1B1F),
     */
 	)
+//endregion
 
+//region Theme Composable
 @Composable
 fun UnigendaTheme(
 	darkTheme: Boolean = isSystemInDarkTheme(),
@@ -61,3 +64,4 @@ fun UnigendaTheme(
 		content = content
 	)
 }
+//endregion

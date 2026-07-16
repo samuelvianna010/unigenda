@@ -2,6 +2,7 @@ package com.samuelvianna010.unigenda.ui.utils
 
 import com.samuelvianna010.unigenda.database.Assessment
 
+//region Grade Calculations
 /**
  * Calculates the normalized score for an assessment based on its weight percentage in the subject.
  * 
@@ -45,3 +46,4 @@ fun calculatePercentage(
     val normalizedScore = calculateTotalNormalizedScore(assessments)
     return (normalizedScore / 10.0 * 100).toInt().coerceIn(0, 100)
 }
+//endregion

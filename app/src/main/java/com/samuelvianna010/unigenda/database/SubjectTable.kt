@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.samuelvianna010.unigenda.core.ui.SubjectColor
 
+//region Subject Entity
 @Entity(tableName = "subjects")
 data class Subject(
 	@PrimaryKey(autoGenerate = true)
@@ -18,7 +19,9 @@ data class Subject(
 			colorInt
 		) ?: SubjectColor.PURPLE
 }
+//endregion
 
+//region Dummy Data
 val DummySubject = Subject(
 	0L,
 	"Dummy Subject Name",
@@ -26,3 +29,4 @@ val DummySubject = Subject(
 	SubjectColor.PURPLE.color.value.toInt(),
 	totalWeight = 10.0
 )
+//endregion

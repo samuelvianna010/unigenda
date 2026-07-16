@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//region Subject ViewModel
 @HiltViewModel
 class SubjectViewModel @Inject constructor(
     private val subjectDao: SubjectDao
@@ -34,7 +35,9 @@ class SubjectViewModel @Inject constructor(
 
     fun getSubjectById(id: Long): Flow<Subject?> = subjectDao.getSubjectById(id)
 }
+//endregion
 
+//region Assessments ViewModel
 @HiltViewModel
 class AssessmentsViewModel @Inject constructor(
     private val assessmentDao: AssessmentDao,
@@ -87,3 +90,4 @@ class AssessmentsViewModel @Inject constructor(
     fun getAssessmentsBySubject(subjectId: Long): Flow<List<Assessment>> =
         assessmentDao.getAssessmentsBySubject(subjectId)
 }
+//endregion

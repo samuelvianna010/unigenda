@@ -16,12 +16,14 @@ import com.samuelvianna010.unigenda.screens.editOrDeleteSubject.EditOrDeleteSubj
 import com.samuelvianna010.unigenda.screens.editOrDeleteAssessment.EditOrDeleteAssessmentScreen
 import com.samuelvianna010.unigenda.screens.home.HomeScreen
 
+//region Navigation Graph
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController,
         startDestination = Screen.Home
     ) {
+        //region Home Destination
         composable<Screen.Home> {
             HomeScreen(
                 onViewSubjectDetails = { subjectId ->
@@ -40,21 +42,27 @@ fun NavGraph(navController: NavHostController) {
                 assessmentsViewModel = hiltViewModel()
             )
         }
+        //endregion
 
+        //region Add Subject Destination
         composable<Screen.AddSubject> {
             AddSubjectScreen(
                 onBack = { navController.popBackStack() },
                 viewModel = hiltViewModel()
             )
         }
+        //endregion
 
+        //region Add Assessment Destination
         composable<Screen.AddAssessment> {
             AddAssessmentScreen(
                 onBack = { navController.popBackStack() },
                 viewModel = hiltViewModel()
             )
         }
+        //endregion
 
+        //region Subject Details Destination
         composable<Screen.SubjectDetails> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.SubjectDetails>()
             SubjectDetailsScreen(
@@ -70,7 +78,9 @@ fun NavGraph(navController: NavHostController) {
                 onBack = { navController.popBackStack() }
             )
         }
+        //endregion
 
+        //region Assessment Details Destination
         composable<Screen.AssessmentDetails> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.AssessmentDetails>()
             AssessmentDetailsScreen(
@@ -82,10 +92,12 @@ fun NavGraph(navController: NavHostController) {
                 },
                 onBack = { navController.popBackStack()
 
-				}
+					}
             )
         }
+        //endregion
 
+        //region Edit Subject Destination
         composable<Screen.EditOrDeleteSubject> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.EditOrDeleteSubject>()
             EditOrDeleteSubjectScreen(
@@ -97,7 +109,9 @@ fun NavGraph(navController: NavHostController) {
                 }
             )
         }
+        //endregion
 
+        //region Edit Assessment Destination
         composable<Screen.EditOrDeleteAssessment> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.EditOrDeleteAssessment>()
             EditOrDeleteAssessmentScreen(
@@ -109,5 +123,7 @@ fun NavGraph(navController: NavHostController) {
                 }
             )
         }
+        //endregion
     }
 }
+//endregion

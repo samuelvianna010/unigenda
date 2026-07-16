@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+//region Status Bar Color
 /**
  * Função interna (não Composable) para definir a cor da barra de status.
  */
@@ -31,3 +32,4 @@ fun SetStatusBarColor(color: Color) {
         }
     }
 }
+//endregion

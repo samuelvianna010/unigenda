@@ -4,6 +4,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
+//region Compact Number Formatting
 /**
  * Formata um Double para exibir o mínimo de casas decimais necessárias.
  * Ex: 5.0 -> "5", 5.5 -> "5.5", 5.55 -> "5.55"
@@ -19,3 +20,4 @@ fun Double.formatCompact(): String {
 fun Double?.formatCompact(fallback: String = "N/A"): String {
     return this?.formatCompact() ?: fallback
 }
+//endregion

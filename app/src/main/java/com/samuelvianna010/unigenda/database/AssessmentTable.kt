@@ -9,13 +9,16 @@ import androidx.room.Embedded
 import androidx.compose.ui.graphics.toArgb
 import com.samuelvianna010.unigenda.core.ui.SubjectColor
 
+//region Urgency Level Enum
 enum class UrgencyLevel(val color: Color, val label: String) {
     LOW(Color(0xFF4CAF50), "Baixa"),
     MEDIUM(Color(0xFFFFC107), "Média"),
     HIGH(Color(0xFFFF9800), "Alta"),
     URGENT(Color(0xFFF44336), "Crítica")
 }
+//endregion
 
+//region Assessment Type Enum
 enum class AssessmentType(val label: String, val defaultUrgency: UrgencyLevel) {
     FINAL_EXAM("Exame Final", UrgencyLevel.URGENT),
     TEST("Prova/Teste", UrgencyLevel.HIGH),
@@ -25,7 +28,9 @@ enum class AssessmentType(val label: String, val defaultUrgency: UrgencyLevel) {
     HOMEWORK("Trabalho de Casa", UrgencyLevel.LOW),
     OTHER("Outro", UrgencyLevel.LOW)
 }
+//endregion
 
+//region Assessment Entity
 @Entity(
     tableName = "assessments",
     foreignKeys = [
@@ -49,7 +54,9 @@ data class Assessment(
     val maxScore: Double, // Maximum possible score
     val score: Double? = null // Actual score attained (0.0 to maxScore)
 )
+//endregion
 
+//region Assessment With Subject Relation
 data class AssessmentWithSubject(
     @Embedded val assessment: Assessment,
     @Relation(
@@ -58,7 +65,9 @@ data class AssessmentWithSubject(
     )
     val subject: Subject
 )
+//endregion
 
+//region Template Data
 val TemplateSubject = Subject(
     id = 0L,
     name = "Introdução ao Pensamento Dedutivo",
@@ -83,3 +92,4 @@ val TemplateAssessmentWithSubject = AssessmentWithSubject(
     assessment = TemplateAssessment,
     subject = TemplateSubject
 )
+//endregion

@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 
+//region Light Color Scheme Generator
 /**
  * Gera um ColorScheme claro completo e balanceado baseado em uma cor semente.
  * Define explicitamente todos os containers de superfície para evitar o tom rosado padrão.
@@ -53,7 +54,9 @@ fun generateLightColorScheme(seedColor: Color): ColorScheme {
         onError = Color.White
     )
 }
+//endregion
 
+//region Dark Color Scheme Generator
 /**
  * Gera um ColorScheme escuro completo baseado em uma cor semente.
  */
@@ -96,7 +99,9 @@ fun generateDarkColorScheme(seedColor: Color): ColorScheme {
         onError = Color(0xFF601410)
     )
 }
+//endregion
 
+//region Subject Color Enum
 /**
  * Enumeração de cores disponíveis para as matérias (Subjects).
  * Cada cor pode fornecer seu próprio ColorScheme para temas claro e escuro.
@@ -129,7 +134,10 @@ enum class SubjectColor(
 		}
 	}
 }
+//endregion
 
+//region Compatibility Alias
 // Mantendo para compatibilidade se necessário, agora derivado do enum
 val SubjectColors =
 	SubjectColor.entries.map { it.color }
+//endregion

@@ -12,9 +12,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+//region Database Module
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+    //region Database Provider
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
@@ -24,7 +26,9 @@ object DatabaseModule {
             "unigenda_db"
         ).fallbackToDestructiveMigration().build()
     }
+    //endregion
 
+    //region DAO Providers
     @Provides
     fun provideSubjectDao(database: AppDatabase): SubjectDao {
         return database.subjectDao()
@@ -34,4 +38,6 @@ object DatabaseModule {
     fun provideAssessmentDao(database: AppDatabase): AssessmentDao {
         return database.assessmentDao()
     }
+    //endregion
 }
+//endregion

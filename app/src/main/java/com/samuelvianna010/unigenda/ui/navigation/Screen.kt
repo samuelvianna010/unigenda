@@ -2,6 +2,7 @@ package com.samuelvianna010.unigenda.ui.navigation
 
 import kotlinx.serialization.Serializable
 
+//region Screen Routes
 sealed interface Screen {
     @Serializable
     data object Home : Screen
@@ -24,3 +25,4 @@ sealed interface Screen {
     @Serializable
     data class EditOrDeleteAssessment(val assessmentId: Long) : Screen
 }
+//endregion

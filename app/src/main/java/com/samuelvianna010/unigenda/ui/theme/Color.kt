@@ -2,6 +2,7 @@ package com.samuelvianna010.unigenda.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+//region Dark Theme Colors
 val Purple80 =
 	Color(
 		0xFFD0BCFF
@@ -14,6 +15,9 @@ val Pink80 =
 	Color(
 		0xFFEFB8C8
 	)
+//endregion
+
+//region Light Theme Colors
 val Purple40 =
 	Color(
 		0xFF6650a4
@@ -26,3 +30,4 @@ val Pink40 =
 	Color(
 		0xFF7D5260
 	)
+//endregion
