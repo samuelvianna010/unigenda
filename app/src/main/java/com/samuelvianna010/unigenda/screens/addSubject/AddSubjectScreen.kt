@@ -51,6 +51,7 @@ import com.samuelvianna010.unigenda.core.ui.SubjectColor
 import com.samuelvianna010.unigenda.database.SubjectViewModel
 import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 
+//region Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddSubjectScreen(
@@ -59,6 +60,7 @@ fun AddSubjectScreen(
 	viewModel: SubjectViewModel? = null,
 	onBack: () -> Unit = {}
 ) {
+	//region Form State
 	var subjectName by remember { mutableStateOf("") }
 	var professorName by remember {
 		mutableStateOf<String>(
@@ -83,9 +85,11 @@ fun AddSubjectScreen(
 	// ESTADOS DE ERRO
 	var subjectNameError by remember { mutableStateOf<String?>(null) }
 	var professorNameError by remember { mutableStateOf<String?>(null) }
+	//endregion
 
 	SetStatusBarColor(subjectColorScheme.primary)
 
+	//region Save Logic
 	fun onSaveClick() {
 		// Reseta erros anteriores
 		subjectNameError = null
@@ -114,7 +118,9 @@ fun AddSubjectScreen(
 			onBack()
 		}
 	}
+	//endregion
 
+	//region Screen UI
 	Scaffold(
 		containerColor = subjectColorScheme.background,
 	) { padding ->
@@ -126,6 +132,7 @@ fun AddSubjectScreen(
 				16.dp
 			)
 		) {
+			//region Header Section
 			// ... (Mantenha todo o seu código de UI exatamente igual aqui) ...
 			// Header
 			Column(
@@ -151,7 +158,9 @@ fun AddSubjectScreen(
 					lineHeight = 0.9.em
 				)
 			}
+			//endregion
 
+			//region Form Section
 			Column(
 				modifier = Modifier
 					.padding(
@@ -162,6 +171,7 @@ fun AddSubjectScreen(
 					16.dp
 				)
 			) {
+				//region Name Fields
 				OutlinedTextField(
 					value = subjectName,
 					onValueChange = {
@@ -216,8 +226,10 @@ fun AddSubjectScreen(
 						unfocusedPlaceholderColor = subjectColorScheme.onSurface
 					)
 				)
+				//endregion
 
 
+				//region Color Selector
 				Column {
 					Text(
 						text = "Cor da Matéria",
@@ -339,7 +351,9 @@ fun AddSubjectScreen(
 						}
 					}
 				}
+				//endregion
 
+				//region Save Button
 				Spacer(
 					modifier = Modifier.weight(
 						1f
@@ -361,11 +375,16 @@ fun AddSubjectScreen(
 				) {
 					Text("Salvar Matéria")
 				}
+				//endregion
 			}
+			//endregion
 		}
 	}
+	//endregion
 }
+//endregion
 
+//region Preview
 @Preview(
 	device = "spec:width=411dp,height=891dp",
 	showBackground = true,
@@ -379,3 +398,4 @@ fun AddSubjectScreenPreview() {
 		AddSubjectScreen(viewModel = null)
 	}
 }
+//endregion

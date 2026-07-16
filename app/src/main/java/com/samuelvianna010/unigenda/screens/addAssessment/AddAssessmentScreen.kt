@@ -61,12 +61,14 @@ import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 import com.samuelvianna010.unigenda.ui.utils.formatDate
 import com.samuelvianna010.unigenda.ui.utils.toLocalMillis
 
+//region Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAssessmentScreen(
     viewModel: AssessmentsViewModel? = null,
     onBack: () -> Unit = {}
 ) {
+    //region Form State
     var assessmentName by remember { mutableStateOf("") }
     val subjects by viewModel?.allSubjects?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList<Subject>()) }
     
@@ -92,9 +94,11 @@ fun AddAssessmentScreen(
     var weightPercentageError by remember { mutableStateOf<String?>(null) }
     var maxScoreError by remember { mutableStateOf<String?>(null) }
     var scoreError by remember { mutableStateOf<String?>(null) }
+    //endregion
 
     SetStatusBarColor(subjectColorScheme.primary)
 
+    //region Date Picker Dialog
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDate)
         DatePickerDialog(
@@ -129,7 +133,9 @@ fun AddAssessmentScreen(
             )
         }
     }
+    //endregion
 
+    //region Save Logic
     fun onSaveClick() {
         nameError = null
         subjectError = null
@@ -178,7 +184,9 @@ fun AddAssessmentScreen(
             onBack()
         }
     }
+    //endregion
 
+    //region Screen UI
     MaterialTheme(colorScheme = subjectColorScheme) {
         Scaffold(
             containerColor = subjectColorScheme.background,
@@ -190,6 +198,7 @@ fun AddAssessmentScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                //region Header Section
                 Column(
                     modifier = Modifier
                         .background(
@@ -210,13 +219,16 @@ fun AddAssessmentScreen(
                         lineHeight = 0.9.em
                     )
                 }
+                //endregion
 
+                //region Form Section
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    //region Name Field
                     OutlinedTextField(
                         value = assessmentName,
                         onValueChange = { assessmentName = it },
@@ -236,7 +248,9 @@ fun AddAssessmentScreen(
                             cursorColor = subjectColorScheme.primary
                         )
                     )
+                    //endregion
 
+                    //region Subject Selector
                     Column {
                         Text(
                             text = "Matéria",
@@ -296,7 +310,9 @@ fun AddAssessmentScreen(
                             )
                         }
                     }
+                    //endregion
 
+                    //region Grading Fields
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -351,7 +367,9 @@ fun AddAssessmentScreen(
                             )
                         }
                     }
+                    //endregion
 
+                    //region Type Selector
                     Column {
                         Text(
                             text = "Tipo de Avaliação",
@@ -396,7 +414,9 @@ fun AddAssessmentScreen(
                             }
                         }
                     }
+                    //endregion
 
+                    //region Date Selector
                     Column {
                         Text(
                             text = "Data de Entrega",
@@ -419,7 +439,9 @@ fun AddAssessmentScreen(
                             }
                         }
                     }
+                    //endregion
 
+                    //region Save Button
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
@@ -433,12 +455,17 @@ fun AddAssessmentScreen(
                     ) {
                         Text("Salvar Avaliação")
                     }
+                    //endregion
                 }
+                //endregion
             }
         }
     }
+    //endregion
 }
+//endregion
 
+//region Preview
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AddAssessmentScreenPreview() {
@@ -446,3 +473,4 @@ fun AddAssessmentScreenPreview() {
         AddAssessmentScreen()
     }
 }
+//endregion
