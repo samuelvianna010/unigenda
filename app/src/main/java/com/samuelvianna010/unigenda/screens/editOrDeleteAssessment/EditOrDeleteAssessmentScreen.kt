@@ -66,6 +66,7 @@ import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 import com.samuelvianna010.unigenda.ui.utils.formatDate
 import com.samuelvianna010.unigenda.ui.utils.toLocalMillis
 
+//region Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditOrDeleteAssessmentScreen(
@@ -74,6 +75,7 @@ fun EditOrDeleteAssessmentScreen(
     onBack: () -> Unit = {},
     onDelete: () -> Unit = onBack
 ) {
+    //region Form State
     val assessmentState = if (viewModel != null) {
         viewModel.getAssessmentById(taskId).collectAsState(initial = null)
     } else {
@@ -126,9 +128,11 @@ fun EditOrDeleteAssessmentScreen(
     var weightPercentageError by remember { mutableStateOf<String?>(null) }
     var maxScoreError by remember { mutableStateOf<String?>(null) }
     var scoreError by remember { mutableStateOf<String?>(null) }
+    //endregion
 
     SetStatusBarColor(subjectColorScheme.primary)
 
+    //region Date Picker Dialog
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDate)
         DatePickerDialog(
@@ -163,7 +167,9 @@ fun EditOrDeleteAssessmentScreen(
             )
         }
     }
+    //endregion
 
+    //region Save Logic
     fun onSaveClick() {
         nameError = null
         weightPercentageError = null
@@ -209,11 +215,14 @@ fun EditOrDeleteAssessmentScreen(
             onBack()
         }
     }
+    //endregion
 
+    //region Screen UI
     MaterialTheme(colorScheme = subjectColorScheme) {
         Scaffold(
             containerColor = subjectColorScheme.background,
         ) { padding ->
+            //region Delete Confirmation Dialog
             if (showDeleteDialog) {
                 AlertDialog(
                     onDismissRequest = { showDeleteDialog = false },
@@ -234,6 +243,7 @@ fun EditOrDeleteAssessmentScreen(
                     }
                 )
             }
+            //endregion
 
             Column(
                 modifier = Modifier
@@ -242,6 +252,7 @@ fun EditOrDeleteAssessmentScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                //region Header Section
                 Column(
                     modifier = Modifier
                         .background(
@@ -262,13 +273,16 @@ fun EditOrDeleteAssessmentScreen(
                         lineHeight = 0.9.em
                     )
                 }
+                //endregion
 
+                //region Form Section
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    //region Name Field
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
@@ -288,7 +302,9 @@ fun EditOrDeleteAssessmentScreen(
                             cursorColor = subjectColorScheme.primary
                         )
                     )
+                    //endregion
 
+                    //region Subject Selector
                     Column {
                         Text(
                             text = "Matéria",
@@ -336,7 +352,9 @@ fun EditOrDeleteAssessmentScreen(
                             }
                         }
                     }
+                    //endregion
 
+                    //region Grading Fields
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -395,7 +413,9 @@ fun EditOrDeleteAssessmentScreen(
                             )
                         }
                     }
+                    //endregion
 
+                    //region Type Selector
                     Column {
                         Text(
                             text = "Tipo de Avaliação",
@@ -440,7 +460,9 @@ fun EditOrDeleteAssessmentScreen(
                             }
                         }
                     }
+                    //endregion
 
+                    //region Date Selector
                     Column {
                         Text(
                             text = "Data de Entrega",
@@ -463,7 +485,9 @@ fun EditOrDeleteAssessmentScreen(
                             }
                         }
                     }
+                    //endregion
 
+                    //region Action Buttons
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -490,12 +514,17 @@ fun EditOrDeleteAssessmentScreen(
                             Text("Salvar Alterações")
                         }
                     }
+                    //endregion
                 }
+                //endregion
             }
         }
     }
+    //endregion
 }
+//endregion
 
+//region Preview
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun EditOrDeleteAssessmentScreenPreview() {
@@ -503,3 +532,4 @@ fun EditOrDeleteAssessmentScreenPreview() {
         EditOrDeleteAssessmentScreen(taskId = 0)
     }
 }
+//endregion
