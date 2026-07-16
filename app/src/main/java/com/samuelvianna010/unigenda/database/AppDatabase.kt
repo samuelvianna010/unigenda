@@ -1,0 +1,16 @@
+package com.samuelvianna010.unigenda.database
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+
+@Database(
+    entities = [Subject::class, Assessment::class],
+    version = 5, // Increment version for weight and score attributes
+    exportSchema = false
+)
+@TypeConverters(Converters::class)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun subjectDao(): SubjectDao
+    abstract fun assessmentDao(): AssessmentDao
+}

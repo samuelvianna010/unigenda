@@ -1,0 +1,39 @@
+# Gradle
+.gradle/
+build/
+*/build/
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# Local config
+local.properties
+
+# IDE - IntelliJ/Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Native build
+.externalNativeBuild/
+.cxx/
+
+# Captures
+/captures/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keystore files (NUNCA commite!)
+*.jks
+*.keystore
+
+# Google Services (Firebase) - depende da política do time
+# google-services.json
