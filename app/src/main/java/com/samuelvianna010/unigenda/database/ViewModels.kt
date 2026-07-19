@@ -45,6 +45,7 @@ class AssessmentsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val allAssessments: Flow<List<Assessment>> = assessmentDao.getAllAssessments()
+	val getUpcomingAssessments: Flow<List<Assessment>> = assessmentDao.getUpcomingAssignments()
     val allSubjects: Flow<List<Subject>> = subjectDao.getAllSubjects()
     val allAssessmentsWithSubject: Flow<List<AssessmentWithSubject>> =
         assessmentDao.getAllAssessmentsWithSubject()

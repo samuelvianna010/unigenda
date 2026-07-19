@@ -50,7 +50,7 @@ fun HomeScreen(
 ) {
     SetStatusBarColor(MaterialTheme.colorScheme.surfaceContainerLowest)
     //region Assessments Variables
-    val allAssessmentsState = assessmentsViewModel?.allAssessments?.collectAsState(initial = emptyList())
+    val allAssessmentsState = assessmentsViewModel?.getUpcomingAssessments?.collectAsState(initial = emptyList())
     val assessmentsList: List<Assessment> = allAssessmentsState?.value ?: emptyList()
     //endregion
     //region Subjects Variables
@@ -107,7 +107,7 @@ fun HomeScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Ainda não há nenhuma avaliação adicionada.",
+                            "Não há nenhuma avaliação programada para os próximos dias.",
                             color = MaterialTheme.colorScheme.onBackground,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             fontWeight = FontWeight.Bold,
