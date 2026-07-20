@@ -15,5 +15,13 @@ class Converters {
 
     @TypeConverter
     fun toAssessmentType(value: String): AssessmentType = AssessmentType.valueOf(value)
+
+    // Converters for storing lecture days (Set<DaysOfTheWeek>) as CSV in Room
+    @TypeConverter
+    fun fromDaysSet(value: Set<DaysOfTheWeek>): String = value.joinToString(",") { it.name }
+
+    @TypeConverter
+    fun toDaysSet(value: String): Set<DaysOfTheWeek> =
+        if (value.isBlank()) emptySet() else value.split(",").map { DaysOfTheWeek.valueOf(it) }.toSet()
 }
 //endregion

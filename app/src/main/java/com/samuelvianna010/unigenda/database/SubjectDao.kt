@@ -12,8 +12,14 @@ interface SubjectDao {
 	@Query("SELECT * FROM subjects ORDER BY name ASC")
 	fun getAllSubjects(): Flow<List<Subject>>
 
+	@Query("SELECT * FROM subjects")
+	suspend fun getAllSubjectsOnce(): List<Subject>
+
 	@Insert
 	suspend fun insertSubject(subject: Subject)
+
+	@Insert
+	suspend fun insertSubjectWithId(subject: Subject): Long
 
 	@Update
 	suspend fun updateSubject(subject: Subject)

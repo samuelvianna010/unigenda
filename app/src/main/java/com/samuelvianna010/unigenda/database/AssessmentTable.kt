@@ -3,6 +3,7 @@ package com.samuelvianna010.unigenda.database
 import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import androidx.room.Embedded
@@ -40,7 +41,8 @@ enum class AssessmentType(val label: String, val defaultUrgency: UrgencyLevel) {
             childColumns = ["subjectId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["subjectId"])]
 )
 data class Assessment(
     @PrimaryKey(autoGenerate = true)
@@ -73,7 +75,10 @@ val TemplateSubject = Subject(
     name = "Introdução ao Pensamento Dedutivo",
     professor = "Severino Collier",
     colorInt = SubjectColor.BLUE.color.toArgb(),
-    totalWeight = 10.0
+    totalWeight = 10.0,
+    lectureDays = setOf(DaysOfTheWeek.MONDAY, DaysOfTheWeek.WEDNESDAY),
+	dateStart = 0L,
+	dateEnd = 0L
 )
 
 val TemplateAssessment = Assessment(

@@ -1,20 +1,20 @@
 package com.samuelvianna010.unigenda.ui.navigation
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.samuelvianna010.unigenda.core.ui.SetStatusBarColor
 import com.samuelvianna010.unigenda.screens.addAssessment.AddAssessmentScreen
 import com.samuelvianna010.unigenda.screens.assessmentDetails.AssessmentDetailsScreen
 import com.samuelvianna010.unigenda.screens.subjectDetails.SubjectDetailsScreen
 import com.samuelvianna010.unigenda.screens.addSubject.AddSubjectScreen
 import com.samuelvianna010.unigenda.screens.editOrDeleteSubject.EditOrDeleteSubjectScreen
 import com.samuelvianna010.unigenda.screens.editOrDeleteAssessment.EditOrDeleteAssessmentScreen
+import com.samuelvianna010.unigenda.screens.editSubjectAttendance.EditSubjectAttendanceScreen
 import com.samuelvianna010.unigenda.screens.home.HomeScreen
+
 
 //region Navigation Graph
 @Composable
@@ -75,10 +75,24 @@ fun NavGraph(navController: NavHostController) {
                 onAssessmentClick = { id ->
                     navController.navigate(Screen.AssessmentDetails(id))
                 },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+				onEditAttendance = { subjectId ->
+					navController.navigate(Screen.EditSubjectAttendance(subjectId))
+				}
             )
         }
         //endregion
+
+		//region Edit Subject Attendance Destination
+		composable<Screen.EditSubjectAttendance> { backStackEntry ->
+			val args = backStackEntry.toRoute<Screen.EditSubjectAttendance>()
+			EditSubjectAttendanceScreen(
+				subjectId = args.subjectId,
+				viewModel = hiltViewModel(),
+				onBack = { navController.popBackStack() }
+			)
+		}
+		//endregion
 
         //region Assessment Details Destination
         composable<Screen.AssessmentDetails> { backStackEntry ->
@@ -91,7 +105,6 @@ fun NavGraph(navController: NavHostController) {
                     navController.navigate(Screen.EditOrDeleteAssessment(id))
                 },
                 onBack = { navController.popBackStack()
-
 				}
             )
         }

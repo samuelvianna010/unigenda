@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.samuelvianna010.unigenda.database.AppDatabase
 import com.samuelvianna010.unigenda.database.SubjectDao
 import com.samuelvianna010.unigenda.database.AssessmentDao
+import com.samuelvianna010.unigenda.database.LectureDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +38,11 @@ object DatabaseModule {
     @Provides
     fun provideAssessmentDao(database: AppDatabase): AssessmentDao {
         return database.assessmentDao()
+    }
+
+    @Provides
+    fun provideLectureDao(database: AppDatabase): LectureDao {
+        return database.lectureDao()
     }
     //endregion
 }

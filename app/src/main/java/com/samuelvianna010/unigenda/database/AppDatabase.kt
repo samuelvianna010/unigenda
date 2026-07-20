@@ -6,13 +6,14 @@ import androidx.room.TypeConverters
 
 //region Room Database
 @Database(
-    entities = [Subject::class, Assessment::class],
-    version = 6,
+    entities = [Subject::class, Assessment::class, Lecture::class],
+    version = 9,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun subjectDao(): SubjectDao
     abstract fun assessmentDao(): AssessmentDao
+    abstract fun lectureDao(): LectureDao
 }
 //endregion

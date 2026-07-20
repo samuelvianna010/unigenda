@@ -1,5 +1,8 @@
 package com.samuelvianna010.unigenda.screens.addSubject
 
+import com.samuelvianna010.unigenda.components.WeekdaySelector
+import com.samuelvianna010.unigenda.components.DatePickerField
+
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -48,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.samuelvianna010.unigenda.core.ui.SetStatusBarColor
 import com.samuelvianna010.unigenda.core.ui.SubjectColor
+import com.samuelvianna010.unigenda.database.DaysOfTheWeek
 import com.samuelvianna010.unigenda.database.SubjectViewModel
 import com.samuelvianna010.unigenda.ui.theme.UnigendaTheme
 
@@ -85,6 +89,14 @@ fun AddSubjectScreen(
 	// ESTADOS DE ERRO
 	var subjectNameError by remember { mutableStateOf<String?>(null) }
 	var professorNameError by remember { mutableStateOf<String?>(null) }
+	// DATES
+	var dateStart by remember { mutableStateOf<Long?>(System.currentTimeMillis()) }
+	var dateEnd by remember { mutableStateOf<Long?>(System.currentTimeMillis()) }
+	var dateStartError by remember { mutableStateOf<String?>(null) }
+	var dateEndError by remember { mutableStateOf<String?>(null) }
+	// Weekday selector state
+	var lectureDays by remember { mutableStateOf(setOf<DaysOfTheWeek>()) }
+	var lectureDaysError by remember { mutableStateOf<String?>(null) }
 	//endregion
 
 	SetStatusBarColor(subjectColorScheme.primary)
@@ -94,6 +106,9 @@ fun AddSubjectScreen(
 		// Reseta erros anteriores
 		subjectNameError = null
 		professorNameError = null
+		lectureDaysError = null
+		dateStartError = null
+		dateEndError = null
 		var hasError = false
 		// Validação do Nome
 		if (subjectName.isBlank()) {
@@ -107,13 +122,36 @@ fun AddSubjectScreen(
 			hasError = true
 		}
 
+		if (lectureDays.isEmpty()) {
+			lectureDaysError = "Selecione pelo menos um dia de aula"
+			hasError = true
+		}
+
+		if (dateStart == null) {
+			dateStartError = "Data de início é obrigatória"
+			hasError = true
+		}
+
+		if (dateEnd == null) {
+			dateEndError = "Data de fim é obrigatória"
+			hasError = true
+		}
+
+		if (dateStart != null && dateEnd != null && dateEnd!! < dateStart!!) {
+			dateEndError = "A data de fim deve ser posterior à de início"
+			hasError = true
+		}
+
 
 		if (!hasError) {
-			println("Salvando disciplina")
+			println("Salvando disciplina. Dias selecionados: $lectureDays")
 			viewModel?.addSubject(
 				subjectName,
 				professorName,
-				selectedColor.color.toArgb()
+				selectedColor.color.toArgb(),
+				lectureDays,
+				dateStart ?: 0L,
+				dateEnd ?: 0L
 			)
 			onBack()
 		}
@@ -228,6 +266,80 @@ fun AddSubjectScreen(
 				)
 				//endregion
 
+				//region Date Fields
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					horizontalArrangement = Arrangement.spacedBy(12.dp)
+				) {
+					DatePickerField(
+						label = "Data de Início",
+						selectedDate = dateStart,
+						onDateSelected = { dateStart = it },
+						modifier = Modifier.weight(1f),
+						isError = dateStartError != null,
+						supportingText = {
+							if (dateStartError != null) {
+								Text(dateStartError!!)
+							}
+						},
+						colors = OutlinedTextFieldDefaults.colors(
+							focusedBorderColor = subjectColorScheme.primary,
+							focusedLabelColor = subjectColorScheme.primary,
+							unfocusedBorderColor = subjectColorScheme.secondary,
+							unfocusedLabelColor = subjectColorScheme.secondary,
+							focusedTextColor = subjectColorScheme.onSurface,
+							unfocusedTextColor = subjectColorScheme.onSurface,
+							cursorColor = subjectColorScheme.onSurface
+						)
+					)
+
+					DatePickerField(
+						label = "Data de Fim",
+						selectedDate = dateEnd,
+						onDateSelected = { dateEnd = it },
+						modifier = Modifier.weight(1f),
+						isError = dateEndError != null,
+						supportingText = {
+							if (dateEndError != null) {
+								Text(dateEndError!!)
+							}
+						},
+						colors = OutlinedTextFieldDefaults.colors(
+							focusedBorderColor = subjectColorScheme.primary,
+							focusedLabelColor = subjectColorScheme.primary,
+							unfocusedBorderColor = subjectColorScheme.secondary,
+							unfocusedLabelColor = subjectColorScheme.secondary,
+							focusedTextColor = subjectColorScheme.onSurface,
+							unfocusedTextColor = subjectColorScheme.onSurface,
+							cursorColor = subjectColorScheme.onSurface
+						)
+					)
+				}
+				//endregion
+
+				//region Lecture Days Selector
+				
+
+				//region Weekday Selector
+				Column {
+					Text(
+						text = "Dias da Aula",
+						style = MaterialTheme.typography.labelLarge,
+						color = subjectColorScheme.onSurfaceVariant
+					)
+
+					WeekdaySelector(
+						selectedDays = lectureDays,
+						onToggleDay = { day ->
+							lectureDays = if (day in lectureDays) lectureDays - day else lectureDays + day
+						},
+						modifier = Modifier.padding(vertical = 8.dp)
+					)
+
+					if (lectureDaysError != null) {
+						Text(lectureDaysError!!, color = MaterialTheme.colorScheme.error)
+					}
+				}
 
 				//region Color Selector
 				Column {

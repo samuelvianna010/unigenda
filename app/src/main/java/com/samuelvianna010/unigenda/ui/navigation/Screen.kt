@@ -24,5 +24,8 @@ sealed interface Screen {
 
     @Serializable
     data class EditOrDeleteAssessment(val assessmentId: Long) : Screen
+
+    @Serializable
+    data class EditSubjectAttendance(val subjectId: Long) : Screen
 }
 //endregion

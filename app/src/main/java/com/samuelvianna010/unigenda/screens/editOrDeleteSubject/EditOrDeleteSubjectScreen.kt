@@ -1,5 +1,8 @@
 package com.samuelvianna010.unigenda.screens.editOrDeleteSubject
 
+import com.samuelvianna010.unigenda.components.WeekdaySelector
+import com.samuelvianna010.unigenda.components.DatePickerField
+
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,9 +19,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
@@ -56,6 +61,7 @@ import androidx.compose.ui.unit.em
 import androidx.core.graphics.ColorUtils
 import com.samuelvianna010.unigenda.core.ui.SetStatusBarColor
 import com.samuelvianna010.unigenda.core.ui.SubjectColor
+import com.samuelvianna010.unigenda.database.DaysOfTheWeek
 import com.samuelvianna010.unigenda.database.DummySubject
 import com.samuelvianna010.unigenda.database.Subject
 import com.samuelvianna010.unigenda.database.SubjectViewModel
@@ -114,6 +120,16 @@ fun EditOrDeleteSubjectScreen(
 			subject.totalWeight.toString()
 		)
 	}
+	var dateStart by remember {
+		mutableStateOf<Long?>(
+			subject.dateStart
+		)
+	}
+	var dateEnd by remember {
+		mutableStateOf<Long?>(
+			subject.dateEnd
+		)
+	}
 	var selectedColor by remember {
 		mutableStateOf(
 			subject.color
@@ -145,6 +161,24 @@ fun EditOrDeleteSubjectScreen(
 			null
 		)
 	}
+	var dateStartError by remember {
+		mutableStateOf<String?>(
+			null
+		)
+	}
+	var dateEndError by remember {
+		mutableStateOf<String?>(
+			null
+		)
+	}
+	// Weekday selector state
+
+	var lectureDays by remember {
+		mutableStateOf(
+			subject.lectureDays
+		)
+	}
+	var lectureDaysError by remember { mutableStateOf<String?>(null) }
 
 	var showDeleteDialog by remember { mutableStateOf(false) }
 	//endregion
@@ -157,6 +191,9 @@ fun EditOrDeleteSubjectScreen(
 		subjectNameError = null
 		professorNameError = null
 		totalWeightError = null
+		lectureDaysError = null
+		dateStartError = null
+		dateEndError = null
 		var hasError = false
 		// Validação do Nome
 		if (subjectName.isBlank()) {
@@ -178,15 +215,38 @@ fun EditOrDeleteSubjectScreen(
 			hasError = true
 		}
 
+		if (lectureDays.isEmpty()) {
+			lectureDaysError = "Selecione pelo menos um dia de aula"
+			hasError = true
+		}
+
+		if (dateStart == null) {
+			dateStartError = "Data de início é obrigatória"
+			hasError = true
+		}
+
+		if (dateEnd == null) {
+			dateEndError = "Data de fim é obrigatória"
+			hasError = true
+		}
+
+		if (dateStart != null && dateEnd != null && dateEnd!! < dateStart!!) {
+			dateEndError = "A data de fim deve ser posterior à de início"
+			hasError = true
+		}
+
 		if (!hasError) {
-			println("Salvando disciplina")
+			println("Salvando disciplina. Dias selecionados: $lectureDays")
 			viewModel?.updateSubject(
 				Subject(
 					subject.id,
 					subjectName,
 					professorName,
 					selectedColor.color.toArgb(),
-					totalWeight ?: 10.0
+					totalWeight ?: 10.0,
+					dateStart ?: 0L,
+					dateEnd ?: 0L,
+					lectureDays
 				)
 			)
 			onBack()
@@ -224,7 +284,7 @@ fun EditOrDeleteSubjectScreen(
 			modifier = Modifier
 				.fillMaxSize()
 				.padding(padding)
-				,
+				.verticalScroll(rememberScrollState()),
 			verticalArrangement = Arrangement.spacedBy(
 				16.dp
 			)
@@ -357,6 +417,78 @@ fun EditOrDeleteSubjectScreen(
 				)
 				//endregion
 
+				//region Date Fields
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					horizontalArrangement = Arrangement.spacedBy(12.dp)
+				) {
+					DatePickerField(
+						label = "Data de Início",
+						selectedDate = dateStart,
+						onDateSelected = { dateStart = it },
+						modifier = Modifier.weight(1f),
+						isError = dateStartError != null,
+						supportingText = {
+							if (dateStartError != null) {
+								Text(dateStartError!!)
+							}
+						},
+						colors = OutlinedTextFieldDefaults.colors(
+							focusedBorderColor = subjectColorScheme.primary,
+							focusedLabelColor = subjectColorScheme.primary,
+							unfocusedBorderColor = subjectColorScheme.secondary,
+							unfocusedLabelColor = subjectColorScheme.secondary,
+							focusedTextColor = subjectColorScheme.onSurface,
+							unfocusedTextColor = subjectColorScheme.onSurface,
+							cursorColor = subjectColorScheme.onSurface
+						)
+					)
+
+					DatePickerField(
+						label = "Data de Fim",
+						selectedDate = dateEnd,
+						onDateSelected = { dateEnd = it },
+						modifier = Modifier.weight(1f),
+						isError = dateEndError != null,
+						supportingText = {
+							if (dateEndError != null) {
+								Text(dateEndError!!)
+							}
+						},
+						colors = OutlinedTextFieldDefaults.colors(
+							focusedBorderColor = subjectColorScheme.primary,
+							focusedLabelColor = subjectColorScheme.primary,
+							unfocusedBorderColor = subjectColorScheme.secondary,
+							unfocusedLabelColor = subjectColorScheme.secondary,
+							focusedTextColor = subjectColorScheme.onSurface,
+							unfocusedTextColor = subjectColorScheme.onSurface,
+							cursorColor = subjectColorScheme.onSurface
+						)
+					)
+				}
+				//endregion
+
+
+				//region Weekday Selector
+				Column {
+					Text(
+						text = "Dias da Aula",
+						style = MaterialTheme.typography.labelLarge,
+						color = subjectColorScheme.onSurfaceVariant
+					)
+
+					WeekdaySelector(
+						selectedDays = lectureDays,
+						onToggleDay = { day ->
+							lectureDays = if (day in lectureDays) lectureDays - day else lectureDays + day
+						},
+						modifier = Modifier.padding(vertical = 8.dp)
+					)
+
+					if (lectureDaysError != null) {
+						Text(lectureDaysError!!, color = MaterialTheme.colorScheme.error)
+					}
+				}
 
 				//region Color Selector
 				Column {

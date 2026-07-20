@@ -55,7 +55,7 @@ fun AssessmentDetailsScreen(
 	assessmentsViewModel: AssessmentsViewModel,
 	subjectViewModel: SubjectViewModel,
 	onEditClick: (assessmentId: Long) -> Unit,
-	onBack: () -> Unit
+	onBack: () -> Unit,
 ) {
 	val assessment =
 		assessmentsViewModel.getAssessmentById(assessmentId)

@@ -2,24 +2,28 @@ package com.samuelvianna010.unigenda.screens.subjectDetails
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,12 +41,16 @@ import com.samuelvianna010.unigenda.components.AssessmentCardContent
 import com.samuelvianna010.unigenda.core.ui.SetStatusBarColor
 import com.samuelvianna010.unigenda.database.Assessment
 import com.samuelvianna010.unigenda.database.AssessmentsViewModel
+import com.samuelvianna010.unigenda.database.Lecture
 import com.samuelvianna010.unigenda.database.Subject
 import com.samuelvianna010.unigenda.database.SubjectViewModel
 import com.samuelvianna010.unigenda.database.TemplateSubject
 import com.samuelvianna010.unigenda.ui.utils.formatCompact
 import com.samuelvianna010.unigenda.ui.utils.calculateTotalNormalizedScore
 import com.samuelvianna010.unigenda.ui.utils.calculatePercentage
+import com.samuelvianna010.unigenda.ui.utils.calculatePresencePercentage
+import com.samuelvianna010.unigenda.ui.utils.countAbsences
+import java.util.Locale
 
 //region Screen Logic
 @Composable
@@ -52,11 +60,14 @@ fun SubjectDetailsScreen(
 	assessmentsViewModel: AssessmentsViewModel,
 	onEditClick: (subjectId: Long) -> Unit,
 	onAssessmentClick: (assessmentId: Long) -> Unit,
-	onBack: () -> Unit
+	onBack: () -> Unit,
+	onEditAttendance: (subjectId: Long) -> Unit,
 ) {
 	val subject = subjectViewModel.getSubjectById(subjectId)
 		.collectAsState(initial = null).value
 	val assessments = assessmentsViewModel.getAssessmentsBySubject(subjectId)
+		.collectAsState(initial = emptyList()).value
+	val lectures = subjectViewModel.getAllLecturesFromSubject(subjectId)
 		.collectAsState(initial = emptyList()).value
 
 	if (subject == null) {
@@ -78,9 +89,11 @@ fun SubjectDetailsScreen(
 		SubjectDetailsContent(
 			subject = subject,
 			assessments = assessments,
+			lectures = lectures,
 			onEditClick = onEditClick,
 			onAssessmentClick = onAssessmentClick,
-			onBack = onBack
+			onBack = onBack,
+			onEditAttendance = onEditAttendance
 		)
 	}
 }
@@ -91,9 +104,11 @@ fun SubjectDetailsScreen(
 fun SubjectDetailsContent(
 	subject: Subject,
 	assessments: List<Assessment>,
+	lectures: List<Lecture>,
 	onEditClick: (subjectId: Long) -> Unit,
 	onAssessmentClick: (assessmentId: Long) -> Unit,
-	onBack: () -> Unit
+	onBack: () -> Unit,
+	onEditAttendance: (subjectId: Long) -> Unit,
 ) {
 	val subjectColorScheme = MaterialTheme.colorScheme
 	SetStatusBarColor(subjectColorScheme.primary)
@@ -101,6 +116,9 @@ fun SubjectDetailsContent(
 	val normalizedScore = calculateTotalNormalizedScore(assessments)
 	val percentage = calculatePercentage(assessments)
 	val totalPercentage = assessments.sumOf { it.weightPercentage }
+	
+	val presencePercentage = calculatePresencePercentage(lectures)
+	val absencesCount = countAbsences(lectures)
 
 	Scaffold(
 		containerColor = subjectColorScheme.background,
@@ -113,7 +131,7 @@ fun SubjectDetailsContent(
 			verticalArrangement = Arrangement.spacedBy(16.dp)
 		) {
 			//region Header Section
-			Column(
+			Box(
 				modifier = Modifier
 					.background(
 						subjectColorScheme.primary,
@@ -122,27 +140,46 @@ fun SubjectDetailsContent(
 							bottomEnd = 24.dp
 						)
 					)
-					.padding(horizontal = 16.dp)
 					.fillMaxWidth()
-					.height(250.dp),
-				verticalArrangement = Arrangement.Center
+					.height(250.dp)
+					.statusBarsPadding()
 			) {
-				Text(
-					text = subject.name,
-					color = subjectColorScheme.onPrimary,
-					fontSize = 10.em,
-					maxLines = 3,
-					fontWeight = FontWeight.ExtraBold,
-					lineHeight = 0.9.em
-				)
-				Text(
-					text = subject.professor,
-					color = subjectColorScheme.onPrimary,
-					fontSize = 4.em,
-					maxLines = 3,
-					fontWeight = FontWeight.SemiBold,
-					lineHeight = 0.9.em
-				)
+				IconButton(
+					onClick = onBack,
+					modifier = Modifier
+						.padding( start = 8.dp)
+						.align(Alignment.TopStart)
+				) {
+					Icon(
+						imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+						contentDescription = "Voltar",
+						tint = subjectColorScheme.onPrimary
+					)
+				}
+
+				Column(
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.fillMaxSize(),
+					verticalArrangement = Arrangement.Center
+				) {
+					Text(
+						text = subject.name,
+						color = subjectColorScheme.onPrimary,
+						fontSize = 10.em,
+						maxLines = 3,
+						fontWeight = FontWeight.ExtraBold,
+						lineHeight = 0.9.em
+					)
+					Text(
+						text = subject.professor,
+						color = subjectColorScheme.onPrimary,
+						fontSize = 4.em,
+						maxLines = 3,
+						fontWeight = FontWeight.SemiBold,
+						lineHeight = 0.9.em
+					)
+				}
 			}
             //endregion
 
@@ -183,8 +220,8 @@ fun SubjectDetailsContent(
 								progress = { progressValue },
 								trackColor = subjectColorScheme.surfaceContainerHighest,
 								color = subjectColorScheme.primary,
-								strokeWidth = 20.dp,
-								modifier = Modifier.size(140.dp)
+								strokeWidth = 12.dp,
+								modifier = Modifier.size(100.dp)
 							)
 							
 							Column(
@@ -198,7 +235,7 @@ fun SubjectDetailsContent(
 									textAlign = TextAlign.Center
 								)
 								Text(
-									text = "Total: ${totalPercentage.formatCompact()}%",
+									text = "${totalPercentage.formatCompact()}%",
 									style = MaterialTheme.typography.bodySmall,
 									textAlign = TextAlign.Center
 								)
@@ -219,7 +256,7 @@ fun SubjectDetailsContent(
 						verticalArrangement = Arrangement.spacedBy(10.dp)
 					) {
 						Text(
-							"Nota Acumulada",
+							"Nota",
 							fontWeight = FontWeight.Bold,
 							fontSize = 4.5.em
 						)
@@ -233,23 +270,26 @@ fun SubjectDetailsContent(
 								progress = { progressValue },
 								trackColor = subjectColorScheme.surfaceContainerHighest,
 								color = subjectColorScheme.primary,
-								strokeWidth = 20.dp,
-								modifier = Modifier.size(140.dp)
+								strokeWidth = 12.dp,
+								modifier = Modifier.size(100.dp)
 							)
 							Column(
 								horizontalAlignment = Alignment.CenterHorizontally,
 								verticalArrangement = Arrangement.Center
 							) {
 								Text(
-									text = String.format("%.1f",
-														 (normalizedScore * 10).toInt() / 10.0),
+									text = String.format(
+										Locale.getDefault(),
+										"%.1f",
+										(normalizedScore * 10).toInt() / 10.0
+									),
 									style = MaterialTheme.typography.headlineSmall,
 									fontWeight = FontWeight.Bold,
 									textAlign = TextAlign.Center
 								)
 								Text(
 									text = "($percentage%)",
-									style = MaterialTheme.typography.bodyMedium,
+									style = MaterialTheme.typography.bodySmall,
 									textAlign = TextAlign.Center
 								)
 							}
@@ -258,6 +298,74 @@ fun SubjectDetailsContent(
                     //endregion
 				}
                 //endregion
+
+				//region Attendance Card
+				Column(
+					modifier = Modifier
+						.fillMaxWidth()
+						.background(
+							color = subjectColorScheme.surfaceContainer,
+							shape = RoundedCornerShape(20.dp)
+						)
+						.padding(16.dp),
+					verticalArrangement = Arrangement.spacedBy(12.dp)
+				) {
+					Row(
+						modifier = Modifier.fillMaxWidth(),
+						horizontalArrangement = Arrangement.SpaceBetween,
+						verticalAlignment = Alignment.CenterVertically
+					) {
+						Text(
+							"Frequência",
+							fontWeight = FontWeight.Bold,
+							fontSize = 4.5.em
+						)
+						Button(
+							onClick = { onEditAttendance(subject.id) },
+							colors = ButtonDefaults.buttonColors(
+								containerColor = subjectColorScheme.primaryContainer,
+								contentColor = subjectColorScheme.onPrimaryContainer
+							),
+							shape = RoundedCornerShape(12.dp),
+							contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+						) {
+							Text("Editar", fontSize = 3.5.em)
+						}
+					}
+					
+					Row(
+						modifier = Modifier.fillMaxWidth(),
+						horizontalArrangement = Arrangement.spacedBy(24.dp)
+					) {
+						Column(modifier = Modifier.weight(1f)) {
+							Text(
+								text = "$presencePercentage%",
+								style = MaterialTheme.typography.headlineSmall,
+								fontWeight = FontWeight.Bold,
+								color = subjectColorScheme.primary
+							)
+							Text(
+								text = "Presença",
+								style = MaterialTheme.typography.bodySmall,
+								color = subjectColorScheme.onSurfaceVariant
+							)
+						}
+						Column(modifier = Modifier.weight(1f)) {
+							Text(
+								text = "$absencesCount",
+								style = MaterialTheme.typography.headlineSmall,
+								fontWeight = FontWeight.Bold,
+								color = subjectColorScheme.error
+							)
+							Text(
+								text = "Faltas",
+								style = MaterialTheme.typography.bodySmall,
+								color = subjectColorScheme.onSurfaceVariant
+							)
+						}
+					}
+				}
+				//endregion
 
 				//region Assessment List Section
 				Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -317,9 +425,11 @@ fun SubjectDetailsPreview() {
 	SubjectDetailsContent(
 		subject = TemplateSubject,
 		assessments = emptyList(),
+		lectures = emptyList(),
 		onEditClick = {},
 		onAssessmentClick = {},
-		onBack = {}
+		onBack = {},
+		onEditAttendance = {}
 	)
 }
 //endregion
