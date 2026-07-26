@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -220,8 +221,10 @@ fun SubjectDetailsContent(
 								progress = { progressValue },
 								trackColor = subjectColorScheme.surfaceContainerHighest,
 								color = subjectColorScheme.primary,
-								strokeWidth = 12.dp,
-								modifier = Modifier.size(100.dp)
+								strokeWidth = 14.dp,
+								modifier = Modifier
+									.fillMaxWidth()
+									.aspectRatio(1f)
 							)
 							
 							Column(
@@ -270,8 +273,10 @@ fun SubjectDetailsContent(
 								progress = { progressValue },
 								trackColor = subjectColorScheme.surfaceContainerHighest,
 								color = subjectColorScheme.primary,
-								strokeWidth = 12.dp,
-								modifier = Modifier.size(100.dp)
+								strokeWidth = 14.dp,
+								modifier = Modifier
+									.fillMaxWidth()
+									.aspectRatio(1f)
 							)
 							Column(
 								horizontalAlignment = Alignment.CenterHorizontally,

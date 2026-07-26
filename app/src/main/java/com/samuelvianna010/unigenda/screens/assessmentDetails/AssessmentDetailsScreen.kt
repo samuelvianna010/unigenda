@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -279,16 +282,26 @@ fun AssessmentDetailsContent(
 									progress = { progressValue },
 									trackColor = subjectColorScheme.surfaceContainerHighest,
 									color = subjectColorScheme.primary,
-									strokeWidth = 20.dp,
-									modifier = Modifier.size(140.dp)
+									strokeWidth = 14.dp,
+									modifier = Modifier
+										.fillMaxWidth()
+										.aspectRatio(1f)
 								)
-								
-								Text(
-									text = "${assessment.weightPercentage.formatCompact()}%",
-									style = MaterialTheme.typography.headlineSmall,
-									fontWeight = FontWeight.Bold,
-									textAlign = TextAlign.Center
-								)
+
+								Column(
+									horizontalAlignment = Alignment.CenterHorizontally,
+									verticalArrangement = Arrangement.Center
+								) {
+									Text(
+										text = "${(progressValue * 100).toInt()}%",
+										fontSize = 6.em,
+										
+										style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+										fontWeight = FontWeight.Bold,
+										textAlign = TextAlign.Center
+									)
+
+								}
 							}
 						}
 					}
@@ -331,8 +344,10 @@ fun AssessmentDetailsContent(
 								progress = { progressValue },
 								trackColor = subjectColorScheme.surfaceContainerHighest,
 								color = subjectColorScheme.primary,
-								strokeWidth = 20.dp,
-								modifier = Modifier.size(140.dp)
+								strokeWidth = 14.dp,
+								modifier = Modifier
+									.fillMaxWidth()
+									.aspectRatio(1f)
 							)
 							Column(
 								horizontalAlignment = Alignment.CenterHorizontally,
@@ -340,7 +355,9 @@ fun AssessmentDetailsContent(
 							) {
 								Text(
 									text = "${assessment.score.formatCompact()}/${assessment.maxScore.formatCompact()}",
-									style = MaterialTheme.typography.headlineSmall,
+									fontSize = 6.em,
+
+									style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
 									fontWeight = FontWeight.Bold,
 									textAlign = TextAlign.Center
 								)
@@ -349,7 +366,7 @@ fun AssessmentDetailsContent(
 										(assessment.score / assessment.maxScore * 100).toInt()
 									Text(
 										text = "($percentage%)",
-										style = MaterialTheme.typography.bodyMedium,
+										style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
 										textAlign = TextAlign.Center
 									)
 								}
