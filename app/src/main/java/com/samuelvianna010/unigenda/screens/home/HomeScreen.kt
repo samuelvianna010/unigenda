@@ -1,5 +1,6 @@
 package com.samuelvianna010.unigenda.screens.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,10 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.samuelvianna010.unigenda.R
 import com.samuelvianna010.unigenda.components.ExpandableFAB
 import com.samuelvianna010.unigenda.components.SubjectCard
 import com.samuelvianna010.unigenda.components.AssessmentCard
@@ -61,7 +65,19 @@ fun HomeScreen(
     var isFABExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("🎓 Unigenda") }) },
+        topBar = {
+            TopAppBar(
+				modifier = Modifier.padding(vertical = 8.dp),
+                title = {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_logo_text),
+                        contentDescription = "Unigenda Logo",
+                        modifier = Modifier.height(64.dp),
+						colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                    )
+                }
+            )
+        },
         floatingActionButton = {
             ExpandableFAB(
                 isExpanded = isFABExpanded,

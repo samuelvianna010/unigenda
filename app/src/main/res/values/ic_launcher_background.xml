@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/ic_launcher_background.xml -->
+<resources>
+    <!-- Fallback para API < 31: cor fixa do seu tema -->
+    <color name="ic_launcher_background">#000000</color>
+</resources>
