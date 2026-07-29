@@ -1,4 +1,4 @@
-9# Unigenda 🎓
+# Unigenda 🎓
 
 Unigenda é um organizador acadêmico pessoal desenvolvido para estudantes que desejam manter o controle total de sua vida universitária. Com uma interface moderna e intuitiva, o aplicativo permite gerenciar disciplinas, avaliações, notas e frequência em um só lugar.
 
