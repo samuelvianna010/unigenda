@@ -16,14 +16,14 @@ Unigenda é um organizador acadêmico pessoal desenvolvido para estudantes que d
 
 Aqui estão algumas capturas de tela das principais funcionalidades do Unigenda:
 
-| Tela Inicial | Detalhes da Avaliação |
-| :---: | :---: |
-| ![HomeScreen](/previews/preview1.png) | ![AssessmentDetails](/previews/preview2.png) |
+|                     Tela Inicial                      |               Detalhes da Avaliação               |
+|:-----------------------------------------------------:|:-------------------------------------------------:|
+|         ![HomeScreen](/previews/preview1.jpg)         |   ![AssessmentDetails](/previews/preview2.jpg)    |
 | Visualize suas próximas tarefas e disciplinas ativas. | Gerencie notas, pesos e prazos de cada atividade. |
 
-| Detalhes da Disciplina | Controle de Frequência |
-| :---: | :---: |
-| ![SubjectDetails](/previews/preview3.png) | ![Attendance](/previews/preview4.png) |
+|               Detalhes da Disciplina                |                Controle de Frequência                 |
+|:---------------------------------------------------:|:-----------------------------------------------------:|
+|      ![SubjectDetails](/previews/preview3.jpg)      |         ![Attendance](/previews/preview4.jpg)         |
 | Visão geral do progresso em uma matéria específica. | Acompanhe suas presenças e faltas de forma detalhada. |
 
 ## 🛠️ Tecnologias Utilizadas
